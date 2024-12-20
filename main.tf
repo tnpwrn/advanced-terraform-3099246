@@ -1,17 +1,18 @@
 ### PROVIDER
 provider "google" {
-  project = "advancedterraform" #replace this with your project-id
+  project = "advancedterraform-445218" #replace this with your project-id
   region  = "us-central1"
   zone    = "us-central1-a"
 }
 
 ### NETWORK
-data "google_compute_network" "default" {
+data "google_compute_network" "default" { # VPC
   name                    = "default"
 }
 
 ## SUBNET
 resource "google_compute_subnetwork" "subnet-1" {
+  #create new subnet in VPC default
   name                     = "subnet1"
   ip_cidr_range            = "10.127.0.0/20"
   network                  = data.google_compute_network.default.self_link
@@ -20,6 +21,7 @@ resource "google_compute_subnetwork" "subnet-1" {
 }
 
 resource "google_compute_firewall" "default" {
+  #firewall rule
   name    = "test-firewall"
   network = data.google_compute_network.default.self_link
 
@@ -29,13 +31,13 @@ resource "google_compute_firewall" "default" {
 
   allow {
     protocol = "tcp"
-    ports    = ["80", "8080", "1000-2000", "22"]
+    ports    = ["80", "8080", "1000-2000", "22"] # open port 80 = HTTP
   }
 
   source_tags = ["web"]
 }
 
-### COMPUTE
+### COMPUTE ENGINE VM
 ## NGINX PROXY
 resource "google_compute_instance" "nginx_instance" {
   name         = "nginx-proxy"
@@ -57,7 +59,7 @@ resource "google_compute_instance" "nginx_instance" {
   }
 }
 
-## WEB1
+## WEB1 (web server)
 resource "google_compute_instance" "web1" {
   name         = "web1"
   machine_type = "f1-micro"
@@ -74,7 +76,7 @@ resource "google_compute_instance" "web1" {
     subnetwork = google_compute_subnetwork.subnet-1.self_link
   }
 }
-## WEB2
+## WEB2 (web server)
 resource "google_compute_instance" "web2" {
   name         = "web2"
   machine_type = "f1-micro"
@@ -90,7 +92,7 @@ resource "google_compute_instance" "web2" {
     subnetwork = google_compute_subnetwork.subnet-1.self_link
   }
 }
-## WEB3
+## WEB3 (web server)
 resource "google_compute_instance" "web3" {
   name         = "web3"
   machine_type = "f1-micro"
@@ -107,7 +109,7 @@ resource "google_compute_instance" "web3" {
   }  
 }
 
-## DB
+## DB (mysql)
 resource "google_compute_instance" "mysqldb" {
   name         = "mysqldb"
   machine_type = "f1-micro"

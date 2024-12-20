@@ -9,6 +9,7 @@ gcloud services enable iam.googleapis.com
 
 gcloud services enable cloudresourcemanager.googleapis.com
 
+gcloud services enable compute.googleapis.com
 
 ## 04_03_Terraform_Cloud_Setup
 ```
