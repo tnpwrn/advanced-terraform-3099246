@@ -9,5 +9,5 @@ module "service_accounts" {
     "${var.project-id}=>roles/storage.objectViewer",
   ]
   grant_billing_role = true
-  org_id = var.org_id
+  org_id             = nonsensitive(var.org_id)
 }
